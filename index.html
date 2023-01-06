@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web socket</title>
+</head>
+
+<body>
+  <div>
+    <input type="text" id="message" placeholder="Insert message">
+    <button id="click_123" onclick="callClick()">Click</button>
+  </div>
+  <script>
+    const socket = new WebSocket('ws://localhost:8082')
+
+    function callClick() {
+      const message = document.getElementById('message');
+      if (message.value != "") {
+        socket.send(message.value);
+      }
+    }
+
+    socket.addEventListener("open", () => {
+      console.log("123123123_12")
+    })
+
+    socket.addEventListener('message', ({ data }) => {
+      console.log(data)
+    })
+  </script>
+</body>
+
+</html>
