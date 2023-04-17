@@ -6,30 +6,85 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Web socket</title>
+  <style>
+    body {
+      background-color: rgb(189, 188, 188);
+    }
+
+    .main {
+      margin: 0 auto;
+      max-width: 680px;
+    }
+
+    .message {
+      height: 300px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 17px;
+      background-color: white;
+    }
+
+    .message li {
+      list-style: none;
+      padding: .7rem;
+      background-color: blueviolet;
+      margin-bottom: .7rem;
+      color: white;
+      border-radius: .7rem;
+    }
+
+    .insert-message {
+      padding: 13px;
+      background-color: white
+    }
+  </style>
 </head>
 
 <body>
-  <div>
-    <input type="text" id="message" placeholder="Insert message">
-    <button id="click_123" onclick="callClick()">Click</button>
+  <div class="main">
+    <ul class="message" id="body-message">
+
+    </ul>
+    <div class="insert-message">
+      <input type="text" id="message" placeholder="Insert message">
+      <button id="click_123" onclick="callClick()">Click</button>
+    </div>
   </div>
   <script>
     const socket = new WebSocket('ws://localhost:8082')
+    const messageBody = document.getElementById('body-message')
+    const message = document.getElementById('message');
 
-    function callClick() {
-      const message = document.getElementById('message');
-      if (message.value != "") {
-        socket.send(message.value);
+    function addMessage(data) {
+      let childElement = document.createElement('li')
+      childElement.innerHTML = data
+      if (messageBody) {
+        messageBody.appendChild(childElement)
       }
     }
 
-    socket.addEventListener("open", () => {
-      console.log("123123123_12")
+    function callClick() {
+      if (message.value != "") {
+        socket.send(message.value);
+        message.value = '';
+      }
+    }
+
+    document.addEventListener('keyup', function (event) {
+      if (event.code === 'Enter') {
+        event.preventDefault();
+        callClick();
+      }
+    });
+
+    // socket.addEventListener("open", () => {
+    //   message.value = '';
+    // })
+
+    socket.addEventListener("message", (e) => {
+      addMessage(e.data)
     })
 
-    socket.addEventListener('message', ({ data }) => {
-      console.log(data)
-    })
   </script>
 </body>
 
